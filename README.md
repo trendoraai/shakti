@@ -28,5 +28,5 @@ pre-commit run --all-files
 ### How to generate git commit messages
 
 ```bash
-{ echo "Give commit message for the following changes, follow Conventional Commit guidelines: " ; git --no-pager diff --staged } | aichat
+{ echo "Give commit message for the following changes, follow Conventional Commit guidelines. \n\nHere are examples of couple of commit messages for your reference: \nExample one and two:\n" ; git --no-pager log -2 --pretty=format:"%B"; echo "\n\nAnd now here are the diffs: "; git --no-pager diff --staged } | aichat
 ```

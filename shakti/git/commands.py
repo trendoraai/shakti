@@ -1,6 +1,7 @@
 import click
 import subprocess
 from .git_add import git_add
+from .git_message import git_message
 
 
 @click.group(context_settings=dict(ignore_unknown_options=True, allow_extra_args=True))
@@ -20,6 +21,18 @@ def add(args, help):
         click.echo(git_add.__doc__)
         ctx.exit()
     git_add(args)
+
+
+@git.command(context_settings=dict(ignore_unknown_options=True, allow_extra_args=True))
+@click.option("--help", is_flag=True, help="Show this message and exit.")
+def message(help):
+    """Generate an AI commit message and output the git commit command ready for execution."""
+    if help:
+        ctx = click.get_current_context()
+        ctx.info_name = "git message"
+        click.echo(git_message.__doc__)
+        ctx.exit()
+    git_message()
 
 
 # The custom invoke method remains the same
