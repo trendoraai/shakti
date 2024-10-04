@@ -1,0 +1,13 @@
+{
+  "files.exclude": {
+    "**/.python-version": true,
+    "poetry.lock": true,
+    "**/__pycache__": true
+  },
+  "search.exclude": {
+    "**/.python-version": true,
+    "poetry.lock": true,
+    "**/__pycache__": true,
+    ".pre-commit-config.yaml": true
+  }
+}

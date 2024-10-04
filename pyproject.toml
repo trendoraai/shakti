@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "shakti"
+version = "0.1.0"
+description = ""
+authors = ["pallavbakshi <pallavbakshi@gmail.com>"]
+readme = "README.md"
+packages = [{include = "shakti"}]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+click = "^8.1.7"
+
+
+[tool.poetry.group.dev.dependencies]
+black = "^24.8.0"
+pre-commit = "^3.8.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+shakti = "shakti.main:cli"
