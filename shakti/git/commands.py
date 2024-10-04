@@ -11,8 +11,14 @@ def git():
 
 @git.command(context_settings=dict(ignore_unknown_options=True, allow_extra_args=True))
 @click.argument("args", nargs=-1, type=click.UNPROCESSED)
-def add(args):
+@click.option("--help", is_flag=True, help="Show this message and exit.")
+def add(args, help):
     """Run black and then git add with given arguments."""
+    if help:
+        ctx = click.get_current_context()
+        ctx.info_name = "git add"
+        click.echo(git_add.__doc__)
+        ctx.exit()
     git_add(args)
 
 
