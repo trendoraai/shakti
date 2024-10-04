@@ -2,7 +2,6 @@ import click
 import subprocess
 
 
-@click.argument("args", nargs=-1, type=click.UNPROCESSED)
 def git_add(args):
     """Run black and then git add with given arguments."""
     click.echo("Running black...")

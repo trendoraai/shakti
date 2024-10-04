@@ -24,3 +24,9 @@ How to manually run pre-commit hooks
 ```bash
 pre-commit run --all-files
 ```
+
+### How to generate git commit messages
+
+```bash
+{ echo "Give commit message for the following changes, follow Conventional Commit guidelines: " ; git --no-pager diff --staged } | aichat
+```
