@@ -1,7 +1,7 @@
 import click
 from shakti.bye import bye
 from shakti.hello import hello
-from shakti.git.git_add import git_add
+from shakti.git.commands import git
 
 
 @click.group()
@@ -12,7 +12,7 @@ def cli():
 
 cli.add_command(hello)
 cli.add_command(bye)
-cli.add_command(git_add)
+cli.add_command(git)
 
 if __name__ == "__main__":
     cli()
