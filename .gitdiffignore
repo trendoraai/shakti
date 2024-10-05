@@ -5,3 +5,5 @@ README.md
 poetry.lock
 pyproject.toml
 .pre-commit-config.yaml
+
+# dir pattern ends with /

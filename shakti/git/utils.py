@@ -19,5 +19,9 @@ def get_ignore_patterns():
     ignore_file = Path(".gitdiffignore")
     if ignore_file.exists():
         with ignore_file.open() as f:
-            return [line.strip() for line in f if line.strip()]
+            return [
+                line.strip()
+                for line in f
+                if line.strip() and not line.strip().startswith("#")
+            ]
     return []
