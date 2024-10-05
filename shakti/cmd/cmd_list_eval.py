@@ -12,6 +12,9 @@ def cmd_list_eval(file_path):
     """
     List commands from the curated file, allow selection with fzf, and execute the selected command.
 
+    Original command:
+    selected_command=$(s cmd list | fzf | awk -F 'command: |\\|tags' '{print $2}') && vared -p "Edit and execute: " -c selected_command && eval "$selected_command"
+
     Usage:
         s cmd list-eval
 

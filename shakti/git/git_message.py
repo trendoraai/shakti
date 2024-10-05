@@ -1,6 +1,7 @@
 import subprocess
 import shlex
 import sys
+import os
 from shakti.utils import register_help
 
 
@@ -28,11 +29,37 @@ def git_message():
     Returns:
         None. The function prints the results to stdout.
     """
+
+    def is_ignored(file_path):
+        if os.path.exists(".gitdiffignore"):
+            with open(".gitdiffignore", "r") as f:
+                patterns = f.read().splitlines()
+            for pattern in patterns:
+                if file_path == pattern or file_path.startswith(pattern + os.sep):
+                    return True
+        return False
+
+    # Get the list of staged files
+    try:
+        staged_files = subprocess.check_output(
+            ["git", "diff", "--staged", "--name-only"], universal_newlines=True
+        ).splitlines()
+    except subprocess.CalledProcessError as e:
+        print(f"Error getting staged files: {e}", file=sys.stderr)
+        return
+
+    # Filter out ignored files
+    filtered_files = [file for file in staged_files if not is_ignored(file)]
+
+    if not filtered_files:
+        print("No changes to commit after applying .gitdiffignore", file=sys.stderr)
+        return
+
     # Generate AI commit message
     ai_commit_command = [
         "bash",
         "-c",
-        '{ echo "Give commit message for the following changes, follow Conventional Commit guidelines. \n\nHere are examples of couple of commit messages for your reference: \nExample one and two:\n" ; git --no-pager log -2 --pretty=format:"%B"; echo "\n\nAnd now here are the diffs: "; git --no-pager diff --staged; } | aichat',
+        f"""{{ echo "Give commit message for the following changes, follow Conventional Commit guidelines. \n\nHere are examples of couple of commit messages for your reference: \nExample one and two:\n" ; git --no-pager log -2 --pretty=format:"%B"; echo "\n\nAnd now here are the diffs: "; git --no-pager diff --staged -- {' '.join(shlex.quote(f) for f in filtered_files)}; }} | aichat""",
     ]
 
     try:
