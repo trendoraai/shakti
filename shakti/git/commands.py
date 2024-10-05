@@ -4,6 +4,7 @@ from .git_add import git_add
 from .git_message import git_message
 from .git_diff import git_diff
 from .git_difftool import git_difftool
+from .git_tree import git_tree
 from shakti.utils import register_help, register_command
 
 
@@ -15,6 +16,8 @@ def git(args):
     - s git add
     - s git message
     - s git diff
+    - s git difftool
+    - s git tree
 
     For more information on any subcommand, use --help flag.
     s --help git add
@@ -48,6 +51,8 @@ def git(args):
         diff(git_options, subcommand_args)
     elif subcommand == "difftool":
         difftool(git_options, subcommand_args)
+    elif subcommand == "tree":
+        tree(subcommand_args)
     else:
         # If the subcommand is not registered, treat it as a regular git command
         command = ["git"] + git_options + [subcommand] + subcommand_args
@@ -80,3 +85,9 @@ def diff(git_options, subcommand_args):
 def difftool(git_options, subcommand_args):
     """Run git difftool with .gitdiffignore support."""
     git_difftool(git_options, subcommand_args)
+
+
+@register_command("git tree")
+def tree(subcommand_args):
+    """Generate a tree-like representation of files in a Git repository."""
+    git_tree(subcommand_args)

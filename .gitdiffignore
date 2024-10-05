@@ -4,3 +4,4 @@ README.md
 .vscode/settings.json
 poetry.lock
 pyproject.toml
+.pre-commit-config.yaml
