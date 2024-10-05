@@ -9,7 +9,7 @@ from shakti.utils import add_list_option, list_commands
 @click.group(context_settings=dict(ignore_unknown_options=True, allow_extra_args=True))
 @click.pass_context
 @click.option(
-    "--shakti-list",
+    "--slist",
     is_flag=True,
     callback=list_commands,
     expose_value=False,
@@ -28,7 +28,7 @@ cli.add_command(git)
 
 # Override the cli group's invoke method to handle unregistered commands
 def invoke(self, ctx):
-    if "--shakti-list" in ctx.args:
+    if "--slist" in ctx.args:
         # Handle --shakti-list option
         list_commands(ctx, None, True)
     elif ctx.protected_args and ctx.protected_args[0] not in self.commands:

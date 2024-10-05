@@ -7,7 +7,7 @@ from shakti.utils import list_commands
 
 @click.group(context_settings=dict(ignore_unknown_options=True, allow_extra_args=True))
 @click.option(
-    "--shakti-list",
+    "--slist",
     is_flag=True,
     callback=list_commands,
     expose_value=False,
@@ -42,8 +42,7 @@ def message():
 
 # Override the git group's invoke method to handle unregistered commands
 def invoke(self, ctx):
-    if "--shakti-list" in ctx.args:
-        # Handle --shakti-list option
+    if "--slist" in ctx.args:
         list_commands(ctx, None, True)
     elif ctx.protected_args and ctx.protected_args[0] not in self.commands:
         # If the subcommand is not registered, treat it as a regular git command
