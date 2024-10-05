@@ -1,57 +1,76 @@
 import click
 from functools import wraps
 
+# Initialize COMMANDS and SHAKTI_OPTIONS
+COMMANDS = {}
+SHAKTI_OPTIONS = {}
 
-def list_commands(ctx, param, value):
-    if not value or ctx.resilient_parsing:
-        return
-    command = ctx.command
-    parent = ctx.parent
 
-    if parent:
-        click.echo(f"Registered subcommands for {parent.command.name} {command.name}:")
+def register_command(func):
+    """Decorator to register commands"""
+    name = func.__name__
+    COMMANDS[name] = {
+        "function": func,
+        "description": func.__doc__ or "No description provided",
+        "options": getattr(func, "options", []),
+    }
+    return func
+
+
+def register_option(func):
+    """Decorator to register shakti options"""
+    name = f"--{func.__name__.replace('_', '-')}"
+    SHAKTI_OPTIONS[name] = {
+        "function": func,
+        "description": func.__doc__ or "No description provided",
+    }
+    return func
+
+
+def command_option(name, description):
+    """Decorator to register command-specific options"""
+
+    def decorator(func):
+        if not hasattr(func, "options"):
+            func.options = []
+        func.options.append((name, description))
+        return func
+
+    return decorator
+
+
+@register_option
+def slist():
+    """List all available commands and shakti options"""
+    print("Available commands:")
+    for name, info in COMMANDS.items():
+        print(f"  {name:<10} {info['description']}")
+        for opt, opt_desc in info["options"]:
+            print(f"    {opt:<12} {opt_desc}")
+    print("\nShakti options:")
+    for opt, info in SHAKTI_OPTIONS.items():
+        print(f"  {opt:<12} {info['description']}")
+
+
+def show_command_help(command):
+    if command in COMMANDS:
+        info = COMMANDS[command]
+        print(f"{command} - {info['description']}")
+        if info["options"]:
+            print("Options:")
+            for opt, opt_desc in info["options"]:
+                print(f"  {opt:<12} {opt_desc}")
     else:
-        click.echo(f"Registered commands for {command.name}:")
-
-    for cmd_name in sorted(command.commands):
-        cmd = command.commands[cmd_name]
-        click.echo(f"- {cmd_name}: {cmd.help}")
-        if isinstance(cmd, click.Group) and not parent:
-            for subcmd_name in sorted(cmd.commands):
-                subcmd = cmd.commands[subcmd_name]
-                click.echo(f"  - {cmd_name} {subcmd_name}: {subcmd.help}")
-    ctx.exit()
+        print(f"Unknown command: {command}")
 
 
-def add_list_option(cmd):
-    if isinstance(cmd, click.Command):
-        cmd.params.append(
-            click.Option(
-                ("--shakti-list",),
-                is_flag=True,
-                callback=list_commands,
-                expose_value=False,
-                is_eager=True,
-                help="List all registered commands and subcommands.",
-            )
-        )
-        return cmd
-    else:
-
-        @wraps(cmd)
-        def wrapper(*args, **kwargs):
-            @click.option(
-                "--shakti-list",
-                is_flag=True,
-                callback=list_commands,
-                expose_value=False,
-                is_eager=True,
-                help="List all registered commands and subcommands.",
-            )
-            @wraps(cmd)
-            def new_cmd(*args, **kwargs):
-                return cmd(*args, **kwargs)
-
-            return new_cmd(*args, **kwargs)
-
-        return wrapper
+def shelp():
+    print("Shakti CLI")
+    print("\nUsage: shakti [options] <command> [options] <subcommand> [args...]")
+    print("\nShakti options:")
+    for opt, info in SHAKTI_OPTIONS.items():
+        print(f"  {opt:<12} {info['description']}")
+    print("\nAvailable commands:")
+    for name, info in COMMANDS.items():
+        print(f"  {name:<10} {info['description']}")
+    print("\nUse 'shakti --help <command>' for more information about a command.")

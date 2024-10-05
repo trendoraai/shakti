@@ -1,7 +1,7 @@
-import click
+from shakti.utils import register_command
 
 
-@click.command()
-def bye():
+@register_command
+def bye(args):
     """A simple program that says goodbye."""
-    click.echo("Goodbye from Shakti!")
+    print("Goodbye from Shakti!")

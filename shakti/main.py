@@ -1,53 +1,56 @@
-import click
+import sys
 import subprocess
 from shakti.bye import bye
 from shakti.hello import hello
 from shakti.git.commands import git
-from shakti.utils import add_list_option, list_commands
+from shakti.utils import slist, shelp
 
 
-@click.group(context_settings=dict(ignore_unknown_options=True, allow_extra_args=True))
-@click.pass_context
-@click.option(
-    "--slist",
-    is_flag=True,
-    callback=list_commands,
-    expose_value=False,
-    is_eager=True,
-    help="List all registered commands and subcommands.",
-)
-def cli(ctx):
+def cli():
     """Shakti CLI"""
-    pass
+    args = sys.argv[1:]
+    if not args:
+        print("Usage: shakti [options] <command> [options] <subcommand> [args...]")
+        sys.exit(1)
 
+    shakti_options = []
+    while args and (args[0].startswith("-") or args[0].startswith("--")):
+        shakti_options.append(args.pop(0))
 
-cli.add_command(hello)
-cli.add_command(bye)
-cli.add_command(git)
+    if "--version" in shakti_options:
+        print("Shakti CLI version 1.0")  # Replace with actual version
+        sys.exit(0)
 
+    try:
+        command = args.pop(0)
+    except IndexError:
+        command = ""
 
-# Override the cli group's invoke method to handle unregistered commands
-def invoke(self, ctx):
-    if "--slist" in ctx.args:
-        # Handle --shakti-list option
-        list_commands(ctx, None, True)
-    elif ctx.protected_args and ctx.protected_args[0] not in self.commands:
-        # If the command is not registered, treat it as a system command
-        command = ctx.protected_args + ctx.args
-        try:
-            subprocess.run(command, check=True)
-        except subprocess.CalledProcessError as e:
-            click.echo(f"Error executing command: {e}", err=True)
-            ctx.exit(e.returncode)
-        except FileNotFoundError:
-            click.echo(f"Command not found: {command[0]}", err=True)
-            ctx.exit(1)
+    if "--help" in shakti_options and command == "":
+        shelp()
+        sys.exit(0)
+
+    if "--slist" in shakti_options and command == "":
+        slist()
+        sys.exit(0)
+
+    if command == "hello":
+        hello(args)
+    elif command == "bye":
+        bye(args)
+    elif command == "git":
+        git(args)
     else:
-        # For registered commands, use the default behavior
-        super(click.Group, self).invoke(ctx)
+        # If the command is not registered, treat it as a system command
+        try:
+            subprocess.run([command] + args, check=True)
+        except subprocess.CalledProcessError as e:
+            print(f"Error executing command: {e}", file=sys.stderr)
+            sys.exit(e.returncode)
+        except FileNotFoundError:
+            print(f"Command not found: {command}", file=sys.stderr)
+            sys.exit(1)
 
-
-cli.invoke = invoke.__get__(cli)
 
 if __name__ == "__main__":
     cli()

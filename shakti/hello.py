@@ -1,7 +1,7 @@
-import click
+from shakti.utils import register_command
 
 
-@click.command()
-def hello():
+@register_command
+def hello(args):
     """A simple program that says hello."""
-    click.echo("Hello from Shakti!")
+    print("Hello from Shakti!")

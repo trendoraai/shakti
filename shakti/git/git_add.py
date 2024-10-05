@@ -1,6 +1,6 @@
-import click
 import subprocess
 import os
+import sys
 
 
 def git_add(args):
@@ -8,7 +8,7 @@ def git_add(args):
     Run black formatter and then git add with given arguments.
 
     This command performs the following steps:
-    1. Runs the 'black' formatter on the current directory.
+    1. Runs the appropriate formatter on the current directory.
     2. Adds files to the git staging area using the provided arguments.
 
     Usage:
@@ -19,33 +19,34 @@ def git_add(args):
         s git add file1.py file2.py
 
     Note:
-        - The 'black' formatter is run using 'poetry run black .'
-        - If 'black' fails, the git add operation will not proceed.
-        - Any errors during 'black' or 'git add' will be reported.
+        - The formatter (black or prettier) is run if available
+        - If the formatter fails, the git add operation will not proceed unless confirmed
+        - Any errors during formatting or 'git add' will be reported.
     """
-    click.echo("Shakti: Command found.")
+    print("Shakti: Command found.")
     formatter = determine_formatter()
 
     if formatter:
-        click.echo(f"Running {formatter['name']}...")
+        print(f"Running {formatter['name']}...")
         try:
             subprocess.run(formatter["command"], check=True)
-            click.echo(f"{formatter['name']} formatting complete.")
+            print(f"{formatter['name']} formatting complete.")
         except subprocess.CalledProcessError as e:
-            click.echo(f"Error running {formatter['name']}: {e}")
-            if click.confirm("Do you want to proceed with git add anyway?"):
-                pass
-            else:
+            print(f"Error running {formatter['name']}: {e}")
+            if (
+                input("Do you want to proceed with git add anyway? (y/N) ").lower()
+                != "y"
+            ):
                 return
     else:
-        click.echo("No suitable formatter found. Proceeding with git add.")
+        print("No suitable formatter found. Proceeding with git add.")
 
-    click.echo("Adding files to staging area with arguments: " + " ".join(args))
+    print("Adding files to staging area with arguments: " + " ".join(args))
     try:
-        subprocess.run(["git", "add"] + list(args), check=True)
-        click.echo("Files added to staging area.")
+        subprocess.run(["git", "add"] + args, check=True)
+        print("Files added to staging area.")
     except subprocess.CalledProcessError as e:
-        click.echo(f"Error adding files: {e}")
+        print(f"Error adding files: {e}", file=sys.stderr)
 
 
 def determine_formatter():
