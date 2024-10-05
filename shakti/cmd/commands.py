@@ -15,8 +15,8 @@ def cmd(args):
     - s cmd list-eval
 
     For more information on any subcommand, use --help flag.
-    s cmd --help list
-    s cmd --help list-eval
+    s --help cmd list
+    s --help cmd list-eval
     """
     if not args:
         print(cmd.__doc__)
@@ -31,19 +31,18 @@ def cmd(args):
         return
 
     subcommand = args[0]
-    subcommand_args = args[1:]
 
     if subcommand == "list":
-        list_command(cmd_options + subcommand_args)
+        list_command()
     elif subcommand == "list-eval":
-        list_eval_command(cmd_options + subcommand_args)
+        list_eval_command()
     else:
         print(f"Error: Unknown subcommand '{subcommand}'")
         sys.exit(1)
 
 
 @register_command("cmd list")
-def list_command(args):
+def list_command():
     """Display the contents of the curated commands file."""
     # Read the config file
     with open("config.shakti.yaml", "r") as config_file:
@@ -57,7 +56,7 @@ def list_command(args):
 
 
 @register_command("cmd list-eval")
-def list_eval_command(args):
+def list_eval_command():
     """Display the contents of the curated commands file."""
     # Read the config file
     with open("config.shakti.yaml", "r") as config_file:

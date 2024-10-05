@@ -2,16 +2,17 @@ import os
 from shakti.utils import register_help
 
 
-@register_help("list")
+@register_help("cmd list")
 def list_file(file_path):
     """
-    Display the contents of a specified file.
+    Display the contents of curated commands file.
+    You can define the file path in the config.shakti.yaml file.
 
     Usage:
-        s list <file_path>
+        s cmd list
 
     Example:
-        s list shakti/main.py
+        s cmd list
     """
     if not file_path:
         print("Error: Please provide a file path.")
