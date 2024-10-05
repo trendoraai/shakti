@@ -3,6 +3,7 @@ import subprocess
 from shakti.bye import bye
 from shakti.hello import hello
 from shakti.git.commands import git
+from shakti.cmd.commands import cmd
 from shakti.utils import slist, shelp, HELP_REGISTRY
 
 
@@ -44,6 +45,8 @@ def cli():
         bye(args)
     elif command == "git":
         git(args)
+    elif command == "cmd":
+        cmd(args)
     else:
         # If the command is not registered, treat it as a system command
         try:

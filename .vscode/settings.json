@@ -9,5 +9,7 @@
     "poetry.lock": true,
     "**/__pycache__": true,
     ".pre-commit-config.yaml": true
-  }
+  },
+  "python.poetryPath": "poetry",
+  "python.venvPath": "/Users/pb/.pyenv/versions/3.12.1/envs/shakti"
 }

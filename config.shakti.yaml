@@ -1,0 +1,5 @@
+# Shakti CLI Configuration
+
+# Command List Configuration
+cmd:
+  file_path: "$HOME/.bash_curated_commands"
