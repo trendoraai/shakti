@@ -1,29 +1,8 @@
 import subprocess
 import sys
 from pathlib import Path
-from shakti.utils import register_help, register_command
-
-
-def is_ignored(file_path, ignore_patterns):
-    path = Path(file_path)
-    for pattern in ignore_patterns:
-        if pattern.endswith("/"):
-            # Directory pattern
-            if path == Path(pattern[:-1]) or path.is_relative_to(pattern):
-                return True
-        else:
-            # File pattern
-            if path.match(pattern):
-                return True
-    return False
-
-
-def get_ignore_patterns():
-    ignore_file = Path(".gitdiffignore")
-    if ignore_file.exists():
-        with ignore_file.open() as f:
-            return [line.strip() for line in f if line.strip()]
-    return []
+from shakti.git.utils import is_ignored, get_ignore_patterns
+from shakti.utils import register_help
 
 
 def build_tree(files):
@@ -39,7 +18,7 @@ def build_tree(files):
     return tree
 
 
-def print_tree(tree, prefix="", is_last=True, use_markdown=True):
+def print_tree(tree, prefix="", use_markdown=True):
     items = list(tree.items())
     for i, (name, subtree) in enumerate(items):
         is_last_item = i == len(items) - 1
@@ -52,7 +31,7 @@ def print_tree(tree, prefix="", is_last=True, use_markdown=True):
             new_prefix = f"{prefix}{'    ' if is_last_item else '│   '}"
 
         if subtree is not None:
-            print_tree(subtree, new_prefix, is_last_item, use_markdown)
+            print_tree(subtree, new_prefix, use_markdown)
 
 
 @register_help("git tree")

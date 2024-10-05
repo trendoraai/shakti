@@ -1,7 +1,7 @@
 import subprocess
 import sys
-import os
 from shakti.utils import register_help
+from shakti.git.utils import is_ignored, get_ignore_patterns
 
 
 @register_help("git diff")
@@ -15,15 +15,6 @@ def git_diff(git_options, subcommand_args):
     Usage: s git [git options] diff [options] [<commit>] [--] [<path>...]
     """
 
-    def is_ignored(file_path):
-        if os.path.exists(".gitdiffignore"):
-            with open(".gitdiffignore", "r") as f:
-                patterns = f.read().splitlines()
-            for pattern in patterns:
-                if file_path == pattern or file_path.startswith(pattern + os.sep):
-                    return True
-        return False
-
     # Get the list of changed files
     try:
         changed_files = subprocess.check_output(
@@ -33,8 +24,13 @@ def git_diff(git_options, subcommand_args):
         print(f"Error executing git diff: {e}", file=sys.stderr)
         sys.exit(e.returncode)
 
+    # Get ignore patterns
+    ignore_patterns = get_ignore_patterns()
+
     # Filter out ignored files
-    filtered_files = [file for file in changed_files if not is_ignored(file)]
+    filtered_files = [
+        file for file in changed_files if not is_ignored(file, ignore_patterns)
+    ]
 
     if filtered_files:
         # Run git diff with filtered files

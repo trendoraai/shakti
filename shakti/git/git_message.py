@@ -1,8 +1,8 @@
 import subprocess
 import shlex
 import sys
-import os
 from shakti.utils import register_help
+from shakti.git.utils import is_ignored, get_ignore_patterns
 
 
 @register_help("git message")
@@ -30,15 +30,6 @@ def git_message():
         None. The function prints the results to stdout.
     """
 
-    def is_ignored(file_path):
-        if os.path.exists(".gitdiffignore"):
-            with open(".gitdiffignore", "r") as f:
-                patterns = f.read().splitlines()
-            for pattern in patterns:
-                if file_path == pattern or file_path.startswith(pattern + os.sep):
-                    return True
-        return False
-
     # Get the list of staged files
     try:
         staged_files = subprocess.check_output(
@@ -48,8 +39,13 @@ def git_message():
         print(f"Error getting staged files: {e}", file=sys.stderr)
         return
 
+    # Get ignore patterns
+    ignore_patterns = get_ignore_patterns()
+
     # Filter out ignored files
-    filtered_files = [file for file in staged_files if not is_ignored(file)]
+    filtered_files = [
+        file for file in staged_files if not is_ignored(file, ignore_patterns)
+    ]
 
     if not filtered_files:
         print("No changes to commit after applying .gitdiffignore", file=sys.stderr)
