@@ -1,4 +1,58 @@
-How to run shakti from your command line
+
+Shakti is a bunch of command line scripts that I personally use to code faster.
+
+It includes things like:
+1. Automatically run black/prettier before doing git add
+2. Get git commit messages from AI
+3. Select a command from curated list and execute (with option to edit)
+4. List all the commands in the curated list
+And more...
+
+## Git related commands
+### How to Automatically run black/prettier before doing git add
+
+```bash
+s git add -u
+s git add .
+```
+
+### How to get git commit messages from AI
+
+```bash
+s git message
+```
+
+### How to get git diff only for relevant files
+
+Whenever coding, I change a lot of files. When I want to see the diff, I want to see it for the relevant files.
+Therefore, I created a .gitdiffignore file which contains the list of files that I want to ignore when doing git diff.
+If you use `s git diff`, it will use .gitdiffignore to show the diff only for the relevant files (ignoring files within .gitdiffignore).
+
+```bash
+s git diff
+```
+
+### How to get git diff only for relevant files
+
+This one also ignores the files within .gitdiffignore
+```bash
+s git difftool
+```
+
+## Curated command line related commands
+### How to select and run a command from a curated list
+
+```bash
+s cmd list-eval
+```
+
+### How to list all the commands in the curated list
+
+```bash
+s cmd list
+```
+
+## How to run shakti from your command line
 
 ```bash
 VENV_PATH=$(poetry env info --path)
