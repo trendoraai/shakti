@@ -1,9 +1,9 @@
 import sys
 import yaml
 from os.path import expandvars
-from .cmd_list import list_file
+from shakti.cmd.cmd_list import list_file
 from shakti.utils import register_help, register_command
-from .cmd_list_eval import cmd_list_eval
+from shakti.cmd.cmd_list_eval import cmd_list_eval
 
 
 @register_help("cmd")

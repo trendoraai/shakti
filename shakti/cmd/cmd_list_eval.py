@@ -1,8 +1,5 @@
-import sys
-import yaml
 import subprocess
-from os.path import expandvars
-from shakti.utils import register_help, register_command
+from shakti.utils import register_help
 import shlex
 import readline
 
