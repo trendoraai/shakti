@@ -1,10 +1,12 @@
 import sys
 import subprocess
+import os
 from .git_add import git_add
 from .git_message import git_message
 from .git_diff import git_diff
 from .git_difftool import git_difftool
 from .git_tree import git_tree
+from .git_signature import git_signature
 from shakti.utils import register_help, register_command
 
 
@@ -18,6 +20,7 @@ def git(args):
     - s git diff
     - s git difftool
     - s git tree
+    - s git signature
 
     For more information on any subcommand, use --help flag.
     s --help git add
@@ -53,6 +56,8 @@ def git(args):
         difftool(git_options, subcommand_args)
     elif subcommand == "tree":
         tree(subcommand_args)
+    elif subcommand == "signature":
+        signature(subcommand_args)
     else:
         # If the subcommand is not registered, treat it as a regular git command
         command = ["git"] + git_options + [subcommand] + subcommand_args
@@ -91,3 +96,43 @@ def difftool(git_options, subcommand_args):
 def tree(subcommand_args):
     """Generate a tree-like representation of files in a Git repository."""
     git_tree(subcommand_args)
+
+
+@register_command("git signature")
+def signature(args):
+    """Extract function and class signatures from Python files."""
+    retain_docstring = False
+    retain_full_docstring = False
+    files = []
+
+    for arg in args:
+        if arg == "--retain-docstring":
+            retain_docstring = True
+        elif arg == "--retain-full-docstring":
+            retain_full_docstring = True
+        else:
+            files.append(arg)
+
+    if not files:
+        print("Error: No files specified.")
+        print(signature.__doc__)
+        return
+
+    for file_path in files:
+        _, ext = os.path.splitext(file_path)
+        if ext.lower() != ".py":
+            print(
+                f"Skipping {file_path}: Only Python (.py) files are currently supported."
+            )
+            continue
+
+        try:
+            with open(file_path, "r") as file:
+                source_code = file.read()
+            print(f"Processing {file_path}:")
+            transformed_code = git_signature(
+                source_code, retain_docstring, retain_full_docstring
+            )
+            print(transformed_code)
+        except Exception as e:
+            print(f"Error processing {file_path}: {e}")

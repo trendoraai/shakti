@@ -6,6 +6,7 @@ from shakti.utils import register_help
 
 
 def build_tree(files):
+    """Construct a nested dictionary representing the file tree structure."""
     tree = {}
     for file_path in files:
         parts = file_path.split("/")
@@ -19,6 +20,7 @@ def build_tree(files):
 
 
 def print_tree(tree, prefix="", use_markdown=True):
+    """Print the file tree structure."""
     items = list(tree.items())
     for i, (name, subtree) in enumerate(items):
         is_last_item = i == len(items) - 1

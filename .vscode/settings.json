@@ -11,5 +11,7 @@
     ".pre-commit-config.yaml": true
   },
   "python.poetryPath": "poetry",
-  "python.venvPath": "/Users/pb/.pyenv/versions/3.12.1/envs/shakti"
+  "python.venvPath": "/Users/pb/.pyenv/versions/3.12.1/envs/shakti",
+  "editor.tabSize": 4,
+  "editor.insertSpaces": true
 }
