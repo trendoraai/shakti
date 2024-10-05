@@ -1,8 +1,10 @@
 import subprocess
 import os
 import sys
+from shakti.utils import register_help
 
 
+@register_help("git add")
 def git_add(args):
     """
     Run black formatter and then git add with given arguments.

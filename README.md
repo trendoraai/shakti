@@ -1,6 +1,3 @@
-
-
-
 How to run shakti from your command line
 
 ```bash

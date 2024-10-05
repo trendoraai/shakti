@@ -1,8 +1,10 @@
 import subprocess
 import shlex
 import sys
+from shakti.utils import register_help
 
 
+@register_help("git message")
 def git_message():
     """
     Generate an AI commit message and output the git commit command ready for execution.

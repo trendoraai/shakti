@@ -2,8 +2,10 @@ import sys
 import subprocess
 from .git_add import git_add
 from .git_message import git_message
+from shakti.utils import register_help, register_command
 
 
+@register_help("git")
 def git(args):
     """Git related commands
 
@@ -49,11 +51,13 @@ def git(args):
             sys.exit(e.returncode)
 
 
+@register_command("git add")
 def add(args):
     """Run black and then git add with given arguments."""
     git_add(args)
 
 
+@register_command("git message")
 def message(args):
     """Generate an AI commit message and output the git commit command ready for execution."""
     git_message()

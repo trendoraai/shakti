@@ -3,7 +3,7 @@ import subprocess
 from shakti.bye import bye
 from shakti.hello import hello
 from shakti.git.commands import git
-from shakti.utils import slist, shelp
+from shakti.utils import slist, shelp, HELP_REGISTRY
 
 
 def cli():
@@ -26,8 +26,12 @@ def cli():
     except IndexError:
         command = ""
 
-    if "--help" in shakti_options and command == "":
-        shelp()
+    if "--help" in shakti_options:
+        if command:
+            help_identifier = f"{command} {' '.join(args)}".strip()
+            shelp(help_identifier)
+        else:
+            shelp()
         sys.exit(0)
 
     if "--slist" in shakti_options and command == "":
