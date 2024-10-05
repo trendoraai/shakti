@@ -27,3 +27,20 @@ pre-commit run --all-files
 ```bash
 { echo "Give commit message for the following changes, follow Conventional Commit guidelines. \n\nHere are examples of couple of commit messages for your reference: \nExample one and two:\n" ; git --no-pager log -2 --pretty=format:"%B"; echo "\n\nAnd now here are the diffs: "; git --no-pager diff --staged } | aichat
 ```
+
+### Set git difftool to use cursor
+
+Set git difftool to use cursor
+```bash
+git config --global diff.tool cursor
+git config --global difftool.cursor.cmd 'cursor --wait --diff $LOCAL $REMOTE'
+```
+
+Verify if cursor is set as difftool
+```bash
+git config --global --get diff.tool
+# Should output: cursor
+
+git config --global --get difftool.cursor.cmd
+# Should output: cursor --wait --diff $LOCAL $REMOTE
+```
