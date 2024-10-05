@@ -2,6 +2,7 @@ import sys
 import subprocess
 from .git_add import git_add
 from .git_message import git_message
+from .git_diff import git_diff
 from shakti.utils import register_help, register_command
 
 
@@ -12,9 +13,10 @@ def git(args):
     List of subcommands:
     - s git add
     - s git message
+    - s git diff
 
     For more information on any subcommand, use --help flag.
-    s git add --help
+    s --help git add
     """
     if not args:
         print(git.__doc__)
@@ -41,6 +43,8 @@ def git(args):
         git_add(git_options + subcommand_args)
     elif subcommand == "message":
         git_message()
+    elif subcommand == "diff":
+        git_diff(git_options, subcommand_args)
     else:
         # If the subcommand is not registered, treat it as a regular git command
         command = ["git"] + git_options + [subcommand] + subcommand_args
@@ -61,3 +65,10 @@ def add(args):
 def message(args):
     """Generate an AI commit message and output the git commit command ready for execution."""
     git_message()
+
+
+@register_command("git diff")
+def diff(args):
+    """Run git diff with .gitdiffignore support."""
+    print("hllo")
+    git_diff(args)
