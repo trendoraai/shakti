@@ -6,4 +6,8 @@ poetry.lock
 pyproject.toml
 .pre-commit-config.yaml
 
+shakti/__init__.py
+shakti/git/__init__.py
+shakti/cmd/__init__.py
+
 # dir pattern ends with /

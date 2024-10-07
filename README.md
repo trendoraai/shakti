@@ -98,3 +98,10 @@ git config --global --get diff.tool
 git config --global --get difftool.cursor.cmd
 # Should output: cursor --wait --diff $LOCAL $REMOTE
 ```
+
+## Feature Backlog
+- Add support for AI to choose the directory to create a file in.
+    - Based on file name
+    - Based on the current directory structure
+    - Based on file description
+- Add support for AI to choose to re-organize the directory structure

@@ -1,7 +1,9 @@
 import ast
 import astor
 import argparse
+import os
 from shakti.utils import register_help
+from shakti.git.utils import is_ignored, get_ignore_patterns  # Add this import
 
 
 class SignatureExtractor(ast.NodeVisitor):
@@ -91,25 +93,67 @@ class SignatureExtractor(ast.NodeVisitor):
 
 
 @register_help("git signature")
-def git_signature(source_code, retain_docstring, retain_full_docstring):
-    """Extract function and class signatures from Python files.
+def git_signature(paths, retain_docstring=False, retain_full_docstring=False):
+    """Extract function and class signatures from Python files and folders.
 
-    Usage: s git signature [--retain-docstring] [--retain-full-docstring] <file1> <file2> ...
+    Usage: s git signature [--retain-docstring] [--retain-full-docstring] <path1> <path2> ...
 
-    Note: Currently only supports Python (.py) files. Other file types will be skipped.
+    Paths can be individual Python files or folders containing Python files.
+    Non-Python files will be skipped.
+    Files and folders specified in .gitdiffignore will be ignored.
     """
-    tree = ast.parse(source_code)
-    extractor = SignatureExtractor(retain_docstring, retain_full_docstring)
-    extractor.visit(tree)
-    return astor.to_source(extractor.new_tree)
+    # Get ignore patterns
+    ignore_patterns = get_ignore_patterns()
+
+    def process_file(file_path):
+        # Check if the file should be ignored
+        if is_ignored(file_path, ignore_patterns):
+            print(f"Skipping {file_path}: Ignored by .gitdiffignore")
+            return
+
+        _, ext = os.path.splitext(file_path)
+        if ext.lower() != ".py":
+            print(
+                f"Skipping {file_path}: Only Python (.py) files are currently supported."
+            )
+            return
+
+        try:
+            with open(file_path, "r") as file:
+                source_code = file.read()
+            print("=" * 100)
+            print(f"Signature for file: {file_path}")
+            tree = ast.parse(source_code)
+            extractor = SignatureExtractor(retain_docstring, retain_full_docstring)
+            extractor.visit(tree)
+            transformed_code = astor.to_source(extractor.new_tree)
+            print(transformed_code)
+        except Exception as e:
+            print(f"Error processing {file_path}: {e}")
+
+    for path in paths:
+        if os.path.isfile(path):
+            process_file(path)
+        elif os.path.isdir(path):
+            for root, _, files in os.walk(path):
+                for file in files:
+                    if file.endswith(".py"):
+                        file_path = os.path.join(root, file)
+                        process_file(file_path)
+        else:
+            print(f"Error: {path} is not a valid file or directory.")
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description="Extract function and class signatures from Python files."
+        description="Extract function and class signatures from Python files and folders."
     )
     parser.add_argument(
-        "files", metavar="F", type=str, nargs="+", help="Python files to analyze"
+        "paths",
+        metavar="PATH",
+        type=str,
+        nargs="+",
+        help="Python files or folders to analyze",
     )
     parser.add_argument(
         "--retain-docstring",
@@ -123,14 +167,4 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
-    for file_path in args.files:
-        with open(file_path, "r") as file:
-            source_code = file.read()
-        print(f"Extracting signatures from {file_path}:")
-        try:
-            transformed_code = git_signature(
-                source_code, args.retain_docstring, args.retain_full_docstring
-            )
-            print(transformed_code)
-        except Exception as e:
-            print(f"Error processing {file_path}: {e}")
+    git_signature(args.paths, args.retain_docstring, args.retain_full_docstring)

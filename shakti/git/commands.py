@@ -100,10 +100,10 @@ def tree(subcommand_args):
 
 @register_command("git signature")
 def signature(args):
-    """Extract function and class signatures from Python files."""
+    """Extract function and class signatures from Python files and folders."""
     retain_docstring = False
     retain_full_docstring = False
-    files = []
+    paths = []
 
     for arg in args:
         if arg == "--retain-docstring":
@@ -111,28 +111,11 @@ def signature(args):
         elif arg == "--retain-full-docstring":
             retain_full_docstring = True
         else:
-            files.append(arg)
+            paths.append(arg)
 
-    if not files:
-        print("Error: No files specified.")
+    if not paths:
+        print("Error: No files or folders specified.")
         print(signature.__doc__)
         return
 
-    for file_path in files:
-        _, ext = os.path.splitext(file_path)
-        if ext.lower() != ".py":
-            print(
-                f"Skipping {file_path}: Only Python (.py) files are currently supported."
-            )
-            continue
-
-        try:
-            with open(file_path, "r") as file:
-                source_code = file.read()
-            print(f"Processing {file_path}:")
-            transformed_code = git_signature(
-                source_code, retain_docstring, retain_full_docstring
-            )
-            print(transformed_code)
-        except Exception as e:
-            print(f"Error processing {file_path}: {e}")
+    git_signature(paths, retain_docstring, retain_full_docstring)
