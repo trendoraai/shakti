@@ -5,6 +5,7 @@ from shakti.hello import hello
 from shakti.git.commands import git
 from shakti.cmd.commands import cmd
 from shakti.utils import slist, shelp, HELP_REGISTRY
+from shakti.report.commands import report
 
 
 def cli():
@@ -47,6 +48,8 @@ def cli():
         git(args)
     elif command == "cmd":
         cmd(args)
+    elif command == "report":
+        report(args)
     else:
         # If the command is not registered, treat it as a system command
         try:

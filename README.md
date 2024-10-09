@@ -55,6 +55,11 @@ s cmd list
 ## How to run shakti from your command line
 
 ```bash
+poetry add pyinstall --group dev
+```
+
+
+```bash
 VENV_PATH=$(poetry env info --path)
 export PATH="$VENV_PATH/bin:$PATH"
 source ~/.bashrc   # For Bash
@@ -105,3 +110,8 @@ git config --global --get difftool.cursor.cmd
     - Based on the current directory structure
     - Based on file description
 - Add support for AI to choose to re-organize the directory structure
+
+
+```bash
+poetry update shakti
+```

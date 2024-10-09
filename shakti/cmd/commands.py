@@ -1,6 +1,7 @@
 import sys
 import yaml
-from os.path import expandvars
+from os.path import expandvars, join
+from importlib import resources
 from shakti.cmd.cmd_list import list_file
 from shakti.utils import register_help, register_command
 from shakti.cmd.cmd_list_eval import cmd_list_eval
@@ -44,8 +45,12 @@ def cmd(args):
 @register_command("cmd list")
 def list_command():
     """Display the contents of the curated commands file."""
+    # Get the config file path from the Shakti package
+    shakti_package = resources.files("shakti")
+    config_path = join(shakti_package, "config.shakti.yaml")
+
     # Read the config file
-    with open("config.shakti.yaml", "r") as config_file:
+    with open(config_path, "r") as config_file:
         config = yaml.safe_load(config_file)
 
     # Get the file path from the config and expand environment variables
@@ -58,8 +63,12 @@ def list_command():
 @register_command("cmd list-eval")
 def list_eval_command():
     """Display the contents of the curated commands file."""
+    # Get the config file path from the Shakti package
+    shakti_package = resources.files("shakti")
+    config_path = join(shakti_package, "config.shakti.yaml")
+
     # Read the config file
-    with open("config.shakti.yaml", "r") as config_file:
+    with open(config_path, "r") as config_file:
         config = yaml.safe_load(config_file)
 
     # Get the file path from the config and expand environment variables

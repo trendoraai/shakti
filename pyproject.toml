@@ -1,16 +1,17 @@
 [tool.poetry]
 name = "shakti"
-version = "0.1.0"
+version = "0.2.9"
 description = ""
 authors = ["pallavbakshi <pallavbakshi@github.com>"]
 readme = "README.md"
 packages = [{include = "shakti"}]
+include = ["config.shakti.yaml"]
 
 [tool.poetry.dependencies]
 python = "^3.12"
 pyyaml = "^6.0.2"
 astor = "^0.8.1"
-
+july = { git = "git@github.com:trendoraai/july.git", branch = "master" }  # Updated this line
 
 [tool.poetry.group.dev.dependencies]
 black = "^24.8.0"
